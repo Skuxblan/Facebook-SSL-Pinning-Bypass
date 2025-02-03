@@ -5,11 +5,27 @@ import subprocess
 import lzma
 import time
 
+def get_latest_frida_version():
+    """Get the latest Frida release version from GitHub."""
+    try:
+        response = requests.get("https://api.github.com/repos/frida/frida/releases/latest")
+        response.raise_for_status()
+        return response.json()["tag_name"]
+    except Exception as e:
+        print(f"[-] Error getting latest Frida version: {e}")
+        sys.exit(1)
+
 def get_frida_version():
-    """Get the installed Frida version."""
+    """Get the installed Frida version or latest available version."""
     try:
         result = subprocess.run(['frida', '--version'], capture_output=True, text=True)
-        return result.stdout.strip()
+        installed_version = result.stdout.strip()
+        latest_version = get_latest_frida_version()
+        
+        print(f"[*] Installed Frida version: {installed_version}")
+        print(f"[*] Latest Frida version: {latest_version}")
+        
+        return latest_version
     except FileNotFoundError:
         print("[-] Frida not found. Please install Frida first.")
         sys.exit(1)
@@ -124,11 +140,11 @@ def main():
         print("[-] Error: No device connected. Please connect an Android device.")
         sys.exit(1)
     
-    # Get Frida version and device architecture
-    frida_version = get_frida_version()
+    # Get latest Frida version and device architecture
+    frida_version = get_latest_frida_version()
     device_arch = get_device_arch()
     
-    print(f"[*] Frida version: {frida_version}")
+    print(f"[*] Using Frida version: {frida_version}")
     print(f"[*] Device architecture: {device_arch}")
     
     # Check if frida-server already exists
