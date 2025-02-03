@@ -2,6 +2,9 @@
 
 This tool provides functionality to bypass SSL pinning on Android applications using Frida. It consists of two main components: a Frida server setup script and an injection script specifically designed to bypass SSL certificate verification.
 
+## Latest Tested App Version
+- Facebook version: **498.0.0.54.74**
+
 ## Prerequisites
 
 - Python 3.x
